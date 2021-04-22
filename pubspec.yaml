@@ -27,6 +27,9 @@ dependencies:
   # DI
   get_it: ^5.0.2  
 
+  # INTL
+  intl: ^0.16.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
