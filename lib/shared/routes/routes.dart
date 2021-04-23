@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:revised_clock/alarm/view/alarm.view.dart';
 import 'package:revised_clock/home/view/home.view.dart';
 
 class AppRoutes {
@@ -10,6 +11,12 @@ class AppRoutes {
       case NamedRoute.home:
         return MaterialPageRoute<void>(
           builder: (context) => const HomeView(),
+          settings: settings,
+        );
+
+      case NamedRoute.alarm:
+        return MaterialPageRoute<void>(
+          builder: (context) => const AlarmView(),
           settings: settings,
         );
 
@@ -40,4 +47,5 @@ class NamedRoute {
   NamedRoute._();
 
   static const String home = '/';
+  static const String alarm = '/alarm';
 }
