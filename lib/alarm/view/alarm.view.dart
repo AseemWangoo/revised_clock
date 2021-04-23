@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:revised_clock/alarm/components/list/alarm.component.dart';
 
@@ -10,8 +8,6 @@ class AlarmView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final isAndroid = Platform.isAndroid;
-
     return Scaffold(
       appBar: AppBar(title: const Text(AlarmStrings.title)),
       body: Center(

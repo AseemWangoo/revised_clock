@@ -1,3 +1,8 @@
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemChannels;
 
@@ -10,6 +15,7 @@ import 'package:revised_clock/home/components/button/button.component.dart';
 
 import 'package:revised_clock/home/view_models/time.viewmodel.dart';
 import 'package:revised_clock/locator.dart';
+import 'package:revised_clock/main.dart';
 import 'package:revised_clock/shared/services/alarm/alarm.service.dart';
 import 'package:revised_clock/shared/services/hive/hive.service.dart';
 
@@ -35,6 +41,11 @@ class _AlarmComponentState extends State<AlarmComponent> {
     super.initState();
     hourVal = ValueNotifier(timeViewModel.hour.toString());
     minuteVal = ValueNotifier(timeViewModel.minute.toString());
+  }
+
+  static Future<void> callback(int id) async {
+    final SendPort uiSendPort = IsolateNameServer.lookupPortByName(isolateName);
+    uiSendPort?.send(id);
   }
 
   @override
@@ -64,15 +75,31 @@ class _AlarmComponentState extends State<AlarmComponent> {
           ),
           ButtonComponent(
             text: AlarmStrings.save,
-            onPressed: () {
+            onPressed: () async {
               SystemChannels.textInput.invokeMethod('TextInput.hide');
 
               final time = AlarmTime()
                 ..hour = hourVal.value
                 ..minute = minuteVal.value;
 
+              final id = Random().nextInt(pow(2, 31).toInt());
+
               final alarms = hiveSVC.getAlarms();
-              alarms.add(time);
+              alarms.put(id, time);
+
+              if (Platform.isAndroid) {
+                final currDate = DateTime.now();
+                await alarmSVC.oneShotAt(
+                    DateTime(
+                      currDate.year,
+                      currDate.month,
+                      currDate.day,
+                      int.parse(time.hour),
+                      int.parse(time.minute),
+                    ),
+                    id,
+                    callback);
+              }
             },
           ),
           ValueListenableBuilder<Box<AlarmTime>>(
