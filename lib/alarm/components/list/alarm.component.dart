@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show SystemChannels;
 
 import 'package:hive/hive.dart';
 
@@ -14,17 +15,27 @@ import 'package:revised_clock/shared/services/hive/hive.service.dart';
 
 import 'package:hive_flutter/hive_flutter.dart';
 
-class AndroidAlarmComponent extends StatefulWidget {
-  const AndroidAlarmComponent({Key key}) : super(key: key);
+class AlarmComponent extends StatefulWidget {
+  const AlarmComponent({Key key}) : super(key: key);
 
   @override
-  _AndroidAlarmComponentState createState() => _AndroidAlarmComponentState();
+  _AlarmComponentState createState() => _AlarmComponentState();
 }
 
-class _AndroidAlarmComponentState extends State<AndroidAlarmComponent> {
+class _AlarmComponentState extends State<AlarmComponent> {
   final alarmSVC = locator<AlarmService>();
   final hiveSVC = locator<HiveService>();
   final timeViewModel = locator<TimeViewModel>().time;
+
+  ValueNotifier<String> hourVal;
+  ValueNotifier<String> minuteVal;
+
+  @override
+  void initState() {
+    super.initState();
+    hourVal = ValueNotifier(timeViewModel.hour.toString());
+    minuteVal = ValueNotifier(timeViewModel.minute.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,24 +50,26 @@ class _AndroidAlarmComponentState extends State<AndroidAlarmComponent> {
               const Text(AlarmStrings.hour),
               const SizedBox(width: 10),
               TextComponent(
-                initialVal: timeViewModel.hour.toString(),
-                onChanged: (val) {},
+                initialVal: hourVal.value,
+                onChanged: (val) => hourVal.value = val,
               ),
               const SizedBox(width: 20),
               const Text(AlarmStrings.minute),
               const SizedBox(width: 10),
               TextComponent(
-                initialVal: timeViewModel.minute.toString(),
-                onChanged: (val) {},
+                initialVal: minuteVal.value,
+                onChanged: (val) => minuteVal.value = val,
               ),
             ],
           ),
           ButtonComponent(
             text: AlarmStrings.save,
             onPressed: () {
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+
               final time = AlarmTime()
-                ..hour = timeViewModel.hour.toString()
-                ..minute = timeViewModel.minute.toString();
+                ..hour = hourVal.value
+                ..minute = minuteVal.value;
 
               final alarms = hiveSVC.getAlarms();
               alarms.add(time);
