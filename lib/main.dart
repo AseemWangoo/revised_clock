@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:revised_clock/shared/services/alarm/alarm.service.dart';
 
 import 'locator.dart';
 import 'shared/routes/routes.dart';
+import 'shared/services/hive/hive.service.dart';
 import 'shared/services/navigation.service.dart';
 
 Future<void> main() async {
@@ -9,6 +11,9 @@ Future<void> main() async {
 
   // INIT SERVICE LOCATOR
   setupLocator();
+
+  locator<AlarmService>().init(wakeup: true);
+  locator<HiveService>().init();
 
   runApp(MainApp());
 }

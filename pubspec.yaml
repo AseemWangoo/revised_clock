@@ -33,12 +33,20 @@ dependencies:
   # ALARM MANAGER
   android_alarm_manager: ^0.4.5+20
 
+  # LOCAL DB
+  hive: ^1.4.2
+  hive_flutter: ^0.3.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # LINTER
   lint: ^1.2.0  
+
+  # HIVE
+  build_runner: ^1.10.0
+  hive_generator: ^0.8.1
 
 flutter:
   uses-material-design: true
