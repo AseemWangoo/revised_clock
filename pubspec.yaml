@@ -30,6 +30,9 @@ dependencies:
   # INTL
   intl: ^0.16.0
 
+  # ALARM MANAGER
+  android_alarm_manager: ^0.4.5+20
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
